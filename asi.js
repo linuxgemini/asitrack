@@ -57,7 +57,6 @@ const main = async _ => {
 		lastUpdated
 	};
 
-	console.log(now.unix());
 	return final;
 };
 
