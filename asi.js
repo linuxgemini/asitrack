@@ -52,13 +52,19 @@ const main = async _ => {
 	const vaccinatedPeopleCount = parseInt(vals.asiyapilankisisayisi, 10);
 	const firstDoseCount = parseInt(vals.asiyapilankisisayisi1doz, 10);
 	const secondDoseCount = parseInt(vals.asiyapilankisisayisi2doz, 10);
+	const totalCount = parseInt(vals.yapilanasisayisi, 10);
+	const calculatedTotalCount = firstDoseCount + secondDoseCount;
+	const doesTotalCountMatchCalculation = totalCount === calculatedTotalCount;
 	const lastUpdated = now.hour(hour).minute(minute).second(0).millisecond(0).toDate();
 
 	const final = {
 		vaccinatedPeopleCount,
 		vaccinatedPeople: {
 			firstDoseCount,
-			secondDoseCount
+			secondDoseCount,
+			totalCount,
+			calculatedTotalCount,
+			doesTotalCountMatchCalculation
 		},
 		lastUpdated
 	};
