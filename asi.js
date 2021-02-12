@@ -50,10 +50,16 @@ const main = async _ => {
 	const minute = parseInt(vals.asisayisiguncellemesaati.split(":")[1], 10);
 
 	const vaccinatedPeopleCount = parseInt(vals.asiyapilankisisayisi, 10);
+	const firstDoseCount = parseInt(vals.asiyapilankisisayisi1Doz, 10);
+	const secondDoseCount = parseInt(vals.asiyapilankisisayisi2Doz, 10);
 	const lastUpdated = now.hour(hour).minute(minute).second(0).millisecond(0).toDate();
 
 	const final = {
 		vaccinatedPeopleCount,
+		vaccinatedPeople: {
+			firstDoseCount,
+			secondDoseCount
+		},
 		lastUpdated
 	};
 
