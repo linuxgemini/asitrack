@@ -25,14 +25,16 @@ const getRaw = async _ => {
 		const $ = cheerio.load(txt);
 
 
-		const data = $("#post-data-harita > div > div.svg-turkiye-haritasi > script");
+		const data = $("script");
 		for (const init of data) {
-			const intxt = strProcess(init.children[0].data);
-			if (!varRegExp.test(intxt)) continue;
-
-			const parsingArr = intxt.split(/\s+/);
-			const obj = JSON.parse(`{"${parsingArr[1]}": "${removeQuote(parsingArr[3])}"}`);
-			vals = {...vals, ...obj};
+			for (const children of init.children) {
+				const intxt = strProcess(children.data);
+				if (!varRegExp.test(intxt)) continue;
+	
+				const parsingArr = intxt.split(/\s+/);
+				const obj = JSON.parse(`{"${parsingArr[1]}": "${removeQuote(parsingArr[3])}"}`);
+				vals = {...vals, ...obj};
+			}
 		}
 	} catch (e) {
 		throw e;
