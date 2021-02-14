@@ -48,13 +48,13 @@ const main = async _ => {
 
 	const vals = await getRaw();
 
-	const hour = parseInt(vals.asisayisiguncellemesaati.split(":")[0], 10);
-	const minute = parseInt(vals.asisayisiguncellemesaati.split(":")[1], 10);
+	const hour = (vals.asisayisiguncellemesaati ? parseInt(vals.asisayisiguncellemesaati.split(":")[0], 10) : now.hour());
+	const minute = (vals.asisayisiguncellemesaati ? parseInt(vals.asisayisiguncellemesaati.split(":")[1], 10) : now.minute());
 
-	const vaccinatedPeopleCount = parseInt(vals.asiyapilankisisayisi, 10);
-	const firstDoseCount = parseInt(vals.asiyapilankisisayisi1doz, 10);
-	const secondDoseCount = parseInt(vals.asiyapilankisisayisi2doz, 10);
-	const totalCount = parseInt(vals.yapilanasisayisi, 10);
+	const vaccinatedPeopleCount = (vals.asiyapilankisisayisi ? parseInt(vals.asiyapilankisisayisi, 10) : 0);
+	const firstDoseCount = (vals.asiyapilankisisayisi1doz ? parseInt(vals.asiyapilankisisayisi1doz, 10) : 0);
+	const secondDoseCount = (vals.asiyapilankisisayisi2doz ? parseInt(vals.asiyapilankisisayisi2doz, 10) : 0);
+	const totalCount = (vals.yapilanasisayisi ? parseInt(vals.yapilanasisayisi, 10) : 0);
 	const calculatedTotalCount = firstDoseCount + secondDoseCount;
 	const doesTotalCountMatchCalculation = totalCount === calculatedTotalCount;
 	const lastUpdated = now.hour(hour).minute(minute).second(0).millisecond(0).toDate();
