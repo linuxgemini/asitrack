@@ -29,12 +29,14 @@ const getRaw = async () => {
             for (const children of init.children) {
                 const intxt = strProcess(children.data);
                 if (!varRegExp.test(intxt)) continue;
-    
+
                 const parsingArr = intxt.split(/\s+/);
                 const obj = JSON.parse(`{"${parsingArr[1]}": "${removeQuote(parsingArr[3])}"}`);
                 vals = {...vals, ...obj};
             }
         }
+
+        return vals;
     } catch (e) {
         return vals;
     }
