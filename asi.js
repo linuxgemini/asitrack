@@ -52,7 +52,7 @@ const main = async () => {
     const firstDoseCountExists = (vals.asiyapilankisisayisi1doz ? true : false);
     const secondDoseCountExists = (vals.asiyapilankisisayisi2doz ? true : false);
     const totalDoseCountExists = (vals.yapilanasisayisi ? true : false);
-    const isFailed = (firstDoseCountExists && secondDoseCountExists);
+    const isFailed = (!firstDoseCountExists && !secondDoseCountExists);
 
     const hour = (timeExists ? parseInt(vals.asisayisiguncellemesaati.split(":")[0], 10) : now.hour());
     const minute = (timeExists ? parseInt(vals.asisayisiguncellemesaati.split(":")[1], 10) : now.minute());
