@@ -10,6 +10,7 @@ require("dayjs/locale/tr");
 dayjs.locale("en");
 dayjs.extend(utc);
 
+const numberProcess = (str) => parseInt(str.replace(/^(\s+)|(\s+)$/g, "").replace(/,|\./g, ""), 10);
 const strProcess = (str) => str.replace(/^(\s+)|(\s+)$/g, "").replace(/;+$/, "").toLowerCase();
 const removeQuote = (str) => str.replace(/^("|')|("|')$/g, "");
 
@@ -23,9 +24,7 @@ const getRaw = async () => {
         const txt = await page.text();
         const $ = cheerio.load(txt);
 
-
-        const data = $("script");
-        for (const init of data) {
+        for (const init of $("script")) {
             for (const children of init.children) {
                 const intxt = strProcess(children.data);
                 if (!varRegExp.test(intxt)) continue;
@@ -33,6 +32,32 @@ const getRaw = async () => {
                 const parsingArr = intxt.split(/\s+/);
                 const obj = JSON.parse(`{"${parsingArr[1]}": "${removeQuote(parsingArr[3])}"}`);
                 vals = {...vals, ...obj};
+            }
+        }
+
+        vals["cities"] = {};
+
+        for (const data of $("g")) {
+            for (const childrendata of data.children) {
+                const attribs = childrendata.attribs;
+                if (!attribs) continue;
+                if (!attribs["data-adi"]) continue;
+
+                const cityName = attribs["data-adi"];
+                const firstDoseCount = numberProcess(attribs["data-birinci-doz"]);
+                const secondDoseCount = numberProcess(attribs["data-ikinci-doz"]);
+                const totalCount = numberProcess(attribs["data-toplam"]);
+    
+                const calculatedTotalCount = firstDoseCount + secondDoseCount;
+                const doesTotalCountMatchCalculation = totalCount === calculatedTotalCount;
+    
+                if (cityName && cityName.length > 0) vals["cities"][cityName] = {
+                    firstDoseCount,
+                    secondDoseCount,
+                    totalCount,
+                    calculatedTotalCount,
+                    doesTotalCountMatchCalculation
+                };
             }
         }
 
@@ -52,6 +77,7 @@ const main = async () => {
     const firstDoseCountExists = (vals.asiyapilankisisayisi1doz ? true : false);
     const secondDoseCountExists = (vals.asiyapilankisisayisi2doz ? true : false);
     const totalDoseCountExists = (vals.yapilanasisayisi ? true : false);
+    const citiesDataExists = (Object.keys(vals.cities) === 0 ? false : true);
     const isFailed = (!firstDoseCountExists && !secondDoseCountExists);
 
     const hour = (timeExists ? parseInt(vals.asisayisiguncellemesaati.split(":")[0], 10) : now.hour());
@@ -68,6 +94,8 @@ const main = async () => {
     const calculatedTotalCount = firstDoseCount + secondDoseCount;
     const doesTotalCountMatchCalculation = totalCount === calculatedTotalCount;
 
+    const cities = (citiesDataExists ? vals.cities : {});
+
     const lastUpdated = now.hour(hour).minute(minute).second(0).millisecond(0).toDate();
 
     const final = {
@@ -78,7 +106,8 @@ const main = async () => {
             secondDoseCount,
             totalCount,
             calculatedTotalCount,
-            doesTotalCountMatchCalculation
+            doesTotalCountMatchCalculation,
+            cities
         },
         lastUpdated
     };
