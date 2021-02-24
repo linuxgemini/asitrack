@@ -4,7 +4,7 @@ const cheerio		=	require("cheerio");
 const dayjs		=	require("dayjs");
 const fetch		=	require("node-fetch");
 const utc		=	require("dayjs/plugin/utc");
-const varRegExp		=	/^var [\w\d]+ = [\w\d:'"]+;?$/i;
+const varRegExp		=	/^var [\w\d]+ = (\d+|".+"|'.+'|`.+`);?$/i;
 
 require("dayjs/locale/tr");
 dayjs.locale("en");
@@ -12,7 +12,7 @@ dayjs.extend(utc);
 
 const numberProcess = (str) => parseInt(str.replace(/^(\s+)|(\s+)$/g, "").replace(/,|\./g, ""), 10);
 const strProcess = (str) => str.replace(/^(\s+)|(\s+)$/g, "").replace(/;+$/, "").toLowerCase();
-const removeQuote = (str) => str.replace(/^("|')|("|')$/g, "");
+const removeQuote = (str) => str.replace(/^("|'|`)|("|'|`)$/g, "");
 
 const getRaw = async () => {
     let vals = {};
@@ -30,7 +30,7 @@ const getRaw = async () => {
                 if (!varRegExp.test(intxt)) continue;
 
                 const parsingArr = intxt.split(/\s+/);
-                const obj = JSON.parse(`{"${parsingArr[1]}": "${removeQuote(parsingArr[3])}"}`);
+                const obj = JSON.parse(`{"${parsingArr[1]}": "${removeQuote(parsingArr.slice(3).join(" "))}"}`);
                 vals = {...vals, ...obj};
             }
         }
