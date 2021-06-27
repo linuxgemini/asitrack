@@ -32,7 +32,7 @@ const getRaw = async () => {
                 if (!varRegExp.test(intxt)) continue;
 
                 const parsingArr = intxt.split(/\s+/);
-                const obj = JSON.parse(`{"${parsingArr[1]}": "${removeQuote(parsingArr.slice(3).join(" "))}"}`);
+                const obj = JSON.parse(`{"${parsingArr[1].toLowerCase()}": "${removeQuote(parsingArr.slice(3).join(" "))}"}`);
                 vals = {...vals, ...obj};
             }
         }
