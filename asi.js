@@ -82,7 +82,14 @@ const main = async () => {
     const citiesDataExists = (Object.keys(vals.cities) === 0 ? false : true);
     const isFailed = (!firstDoseCountExists && !secondDoseCountExists);
 
-    const parsedDate = (timeExists ? dayjs(vals.asisayisiguncellemesaati, "DD MMMM YYYY, dddd HH:mm", true) : now);
+    let modDate;
+    if (timeExists) {
+        let pDate = vals.asisayisiguncellemesaati.split(",");
+        let dateWithoutTime = pDate[0];
+        let dateTime = pDate[1].split(" ").pop();
+        modDate = `${dateWithoutTime} ${dateTime}`;
+    }
+    const parsedDate = (modDate ? dayjs(modDate, "DD MMMM YYYY HH:mm", true) : now);
     
     const hour = (parsedDate.isValid() ? parsedDate.hour() : now.hour());
     const minute = (parsedDate.isValid() ? parsedDate.minute() : now.minute());
