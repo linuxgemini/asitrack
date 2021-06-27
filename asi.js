@@ -4,10 +4,12 @@ const cheerio		=	require("cheerio");
 const dayjs		=	require("dayjs");
 const fetch		=	require("node-fetch");
 const utc		=	require("dayjs/plugin/utc");
+const customParseFormat =	require("dayjs/plugin/customParseFormat");
 const varRegExp		=	/^var [\w\d]+ = (\d+|".+"|'.+'|`.+`);?$/i;
 
 require("dayjs/locale/tr");
-dayjs.locale("en");
+dayjs.locale("tr");
+dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 
 const numberProcess = (str) => parseInt(str.replace(/^(\s+)|(\s+)$/g, "").replace(/,|\./g, ""), 10);
@@ -68,7 +70,7 @@ const getRaw = async () => {
 };
 
 const main = async () => {
-    const now =  dayjs().utcOffset(3);
+    const now =  dayjs();
 
     const vals = await getRaw();
 
@@ -80,8 +82,10 @@ const main = async () => {
     const citiesDataExists = (Object.keys(vals.cities) === 0 ? false : true);
     const isFailed = (!firstDoseCountExists && !secondDoseCountExists);
 
-    const hour = (timeExists ? parseInt(vals.asisayisiguncellemesaati.split(":")[0], 10) : now.hour());
-    const minute = (timeExists ? parseInt(vals.asisayisiguncellemesaati.split(":")[1], 10) : now.minute());
+    const parsedDate = (timeExists ? dayjs(vals.asisayisiguncellemesaati, "DD MMMM YYYY, dddd HH:mm", true) : now);
+    
+    const hour = (parsedDate.isValid() ? parsedDate.hour() : now.hour());
+    const minute = (parsedDate.isValid() ? parsedDate.minute() : now.minute());
 
     // legacy
     const vaccinatedPeopleCount = (vaxCountExists ? parseInt(vals.asiyapilankisisayisi, 10) : NaN);
