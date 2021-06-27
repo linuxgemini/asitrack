@@ -13,7 +13,7 @@ dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 
 const numberProcess = (str) => parseInt(str.replace(/^(\s+)|(\s+)$/g, "").replace(/,|\./g, ""), 10);
-const strProcess = (str) => str.replace(/^(\s+)|(\s+)$/g, "").replace(/;+$/, "").toLowerCase();
+const strProcess = (str) => str.replace(/^(\s+)|(\s+)$/g, "").replace(/;+$/, "");
 const removeQuote = (str) => str.replace(/^("|'|`)|("|'|`)$/g, "");
 
 const getRaw = async () => {
