@@ -16,6 +16,10 @@ const numberProcess = (str) => parseInt(str.replace(/^(\s+)|(\s+)$/g, "").replac
 const strProcess = (str) => str.replace(/^(\s+)|(\s+)$/g, "").replace(/;+$/, "");
 const removeQuote = (str) => str.replace(/^("|'|`)|("|'|`)$/g, "");
 
+const getNumDiff = (a, b) => {
+    return (a > b) ? (a - b) : (b - a);
+};
+
 const getRaw = async () => {
     let vals = {};
 
@@ -52,10 +56,12 @@ const getRaw = async () => {
     
                 const calculatedTotalCount = firstDoseCount + secondDoseCount;
                 const doesTotalCountMatchCalculation = totalCount === calculatedTotalCount;
+                const thirdDoseCount = (doesTotalCountMatchCalculation ? 0 : getNumDiff(totalCount, calculatedTotalCount));
     
                 if (cityName && cityName.length > 0) vals["cities"][cityName] = {
                     firstDoseCount,
                     secondDoseCount,
+                    thirdDoseCount,
                     totalCount,
                     calculatedTotalCount,
                     doesTotalCountMatchCalculation
@@ -104,6 +110,7 @@ const main = async () => {
 
     const calculatedTotalCount = firstDoseCount + secondDoseCount;
     const doesTotalCountMatchCalculation = totalCount === calculatedTotalCount;
+    const thirdDoseCount = (doesTotalCountMatchCalculation ? 0 : getNumDiff(totalCount, calculatedTotalCount));
 
     const cities = (citiesDataExists ? vals.cities : {});
 
@@ -115,6 +122,7 @@ const main = async () => {
         vaccinatedPeople: {
             firstDoseCount,
             secondDoseCount,
+            thirdDoseCount,
             totalCount,
             calculatedTotalCount,
             doesTotalCountMatchCalculation,
